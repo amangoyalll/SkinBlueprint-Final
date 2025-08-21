@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SkinBlueprint</title>
+    <meta name="description" content="Personalized skincare consultation and analysis platform" />
+    <meta name="author" content="SkinBlueprint" />
+
+    <link rel="icon" href="/assets/skinblueprint-logo-D3_r4jkn.png" type="image/png">
+
+    <meta property="og:title" content="SkinBlueprint" />
+    <meta property="og:description" content="Personalized skincare consultation and analysis platform" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SkinBlueprint" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SkinBlueprint" />
+    <meta name="twitter:description" content="Personalized skincare consultation and analysis platform" />
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const TARGET_WEBHOOK = 'https://n8n.skinblueprint.in/webhook/create-order';
+
+        function patchForm(form) {
+          if (!form) return;
+          const action = form.getAttribute('action') || '';
+          if (action === TARGET_WEBHOOK) {
+            // Stop navigation to webhook URL
+            form.setAttribute('id', 'skincare-form');
+            form.setAttribute('action', '#');
+            form.addEventListener('submit', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              console.warn('Direct submission to create-order prevented. Payment is handled asynchronously.');
+              return false;
+            });
+          }
+        }
+
+        // Patch any existing forms
+        document.querySelectorAll('form').forEach(patchForm);
+
+        // Patch forms added later
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((m) => {
+            m.addedNodes.forEach((node) => {
+              if (node.nodeType === 1) {
+                if ((node).tagName === 'FORM') patchForm(node);
+                node.querySelectorAll && node.querySelectorAll('form').forEach(patchForm);
+              }
+            });
+          });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+      });
+    </script>
+    <script type="module" crossorigin src="/assets/index-DTNntJ95.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BXf3s2Wd.css">
+  </head>
+
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
